@@ -81,7 +81,7 @@ tr:nth-child(even) { background-color: #f2f2f2; }
 </style>
 "@
 
-$introText = "<h2>Deleted Users Report</h2><p>Total Deleted Users: $($deletedUsers.Count)</p>"
+$introText = "<h2>Deleted Users Report</h2><p>Total Deleted Users for the last 30 days: $($deletedUsers.Count)</p>"
 $htmlTable = $deletedUsers | ConvertTo-Html -Head $css -Title "Deleted Users" | Out-String
 $htmlTableContent = ($htmlTable -replace '(<body>)', "`$1$introText").Trim()
 
