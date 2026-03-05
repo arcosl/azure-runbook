@@ -1,0 +1,12 @@
+Az.Accounts
+Az.Communication
+Microsoft.Entra.Users
+Microsoft.Entra.Authentication
+
+Install-Module Az.Accounts
+Install-Module Az.Communication
+
+Import-Module Az.Accounts
+Import-Module Az.Communication
+
+./deletedUsers.ps1 -commSrvRGname "comm-srv-test" -commSrvName "cs-comm-srv-test" -recipients @("andrey.aleksandrov@dxc.com", "an.aleksandrov@gmail.com")
