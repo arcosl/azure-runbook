@@ -10,7 +10,7 @@
 #
 # required permissions for the Managed Identity running this script:
 #   - Directory.Read.All (for reading deleted users) over Microsoft Graph API
-#   - Contributor over the Communication Service resource in Azure (for sending emails) over Azure Communication Services o:
+#   - Contributor over the Communication Service resource in Azure (for sending emails) or:
 #       - CommunicationServiceEmail.Send (for sending emails) over Azure Communication Services
 #       - CommunicationServiceEmail.Domains.Read (for reading email domains) over Azure Communication Services
 #       - CommunicationServiceEmail.Services.Read (for reading communication services) over Azure Communication Services
