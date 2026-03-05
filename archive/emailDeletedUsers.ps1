@@ -1,18 +1,27 @@
+Import-Module Az.Accounts -ErrorAction SilentlyContinue
+Import-Module Microsoft.Graph.Authentication -ErrorAction SilentlyContinue
+Import-Module Microsoft.Entra -ErrorAction SilentlyContinue
+Import-Module Microsoft.Entra.Users -ErrorAction SilentlyContinue
+
+# Parameters for Azure Communication Services
 $commSrvRGname = "comm-srv-test"
-
 $commSrvName = "cs-comm-srv-test"
-
 $recipients = "andrey.aleksandrov@dxc.com"
 
 # # Authenticate using Azure Automation managed identity
 Connect-AzAccount -Identity
+Connect-Entra -Identity -NoWelcome
 
-Connect-Entra -Scopes 'User.Read.All'
-
+# Get all deleted users from Entra ID
 $deletedUsers = $(Get-EntraDeletedUser -All | Select-Object Id, UserPrincipalName, DisplayName, AccountEnabled, DeletedDateTime, DeletionAgeInDays, UserType)
-#remove ID from UserPrincipalName for better readability
+
+# If there are no deleted users, exit the script
+if ($deletedUsers.Count -eq 0) { return }
+
+# remove ID from UserPrincipalName for better readability
 $deletedUsers | ForEach-Object { $_.UserPrincipalName = $_.UserPrincipalName -replace '^[a-f0-9]{32}', '' }
 
+# Build HTML table with CSS styling
 $css = @"
 <style>
 table {
@@ -52,7 +61,6 @@ $htmlTable = $deletedUsers | ConvertTo-Html -Head $css -Title "Deleted Users" | 
 $htmlTableContent = ($htmlTable -replace '(<body>)', "`$1$introText").Trim()
 
 # Sent the email with the HTML table using azure communication services
-
 # Get ACS service details
 $acsService = Get-AzCommunicationService -ResourceGroupName $commSrvRGname -Name $commSrvName
 
@@ -70,7 +78,8 @@ $domainNameOrId = $pathSegments[-1]   # domain name (could be custom domain or "
 if ($domainNameOrId -eq "AzureManagedDomain") {
     $domain = Get-AzEmailServiceDomain -ResourceGroupName $commSrvRGname -EmailServiceName $emailServiceName -Name $domainNameOrId
     $domainName = $domain.MailFromDomain
-} else {
+}
+else {
     $domainName = $domainNameOrId
 }
 
