@@ -1,6 +1,6 @@
 # 1) Get Automation Account managed identity principal ID
 $subscriptionId = "2dfb6295-ab2f-4a7c-8b31-81d3ea84b3f1"
-$resourceGroup  = "rg-AutomationAccounts"
+$resourceGroup = "rg-AutomationAccounts"
 $automationName = "aa-swv-main"
 
 Connect-AzAccount
@@ -9,7 +9,7 @@ Set-AzContext -SubscriptionId $subscriptionId
 $miPrincipalId = (Get-AzAutomationAccount -ResourceGroupName $resourceGroup -Name $automationName).Identity.PrincipalId
 
 # 2) Connect to Microsoft Graph with rights to assign app roles
-Connect-MgGraph -Scopes "Application.Read.All","AppRoleAssignment.ReadWrite.All","Directory.Read.All"
+Connect-MgGraph -Scopes "Application.Read.All", "AppRoleAssignment.ReadWrite.All", "Directory.Read.All"
 
 # 3) Get service principals (MI + Microsoft Graph)
 $miSp = Get-MgServicePrincipal -Filter "id eq '$miPrincipalId'"
@@ -22,7 +22,7 @@ $role = $graphSp.AppRoles | Where-Object {
 
 # 5) Assign role to managed identity
 New-MgServicePrincipalAppRoleAssignment `
-  -ServicePrincipalId $miSp.Id `
-  -PrincipalId $miSp.Id `
-  -ResourceId $graphSp.Id `
-  -AppRoleId $role.Id
+    -ServicePrincipalId $miSp.Id `
+    -PrincipalId $miSp.Id `
+    -ResourceId $graphSp.Id `
+    -AppRoleId $role.Id

@@ -1,0 +1,37 @@
+# Copy this file to terraform.tfvars and fill in the values for your environment.
+# Never commit terraform.tfvars to source control if it contains sensitive data.
+
+subscription_id = "<your-subscription-id>"
+
+location       = "Sweden Central"
+short_location = "swc"
+environment    = "dev"
+project_name   = "<your-project-short-name>"  # required — used in all resource names
+suffix         = "1"
+
+# Resource names are derived automatically from the above variables:
+#   resource_group_name     = "rg-<short_location>-<environment>-<project_name>-<suffix>"
+#   automation_account_name = "aa-<short_location>-<environment>-<project_name>-<suffix>"
+#   managed_identity_name   = "mi-<short_location>-<environment>-<project_name>-<suffix>"
+#   runbook_name            = "rb-<short_location>-<environment>-<project_name>-<suffix>"
+#   schedule_name           = "sc-<short_location>-<environment>-<project_name>-<suffix>"
+#   schedule_start_time     = timestamp() + 1h  (auto-calculated at terraform apply time)
+
+# Schedule
+schedule_frequency = "Day"
+schedule_interval  = 1
+
+# ACS — these values are stored as Automation Account Variables used by the runbook.
+# The Managed Identity is granted Contributor on the ACS resource group (not just
+# the communication service resource) so it can also call Get-AzEmailServiceDomain
+# on the sibling emailServices resource.
+acs_resource_group_name = "<rg-communication>"
+acs_resource_name       = "<acs-resource-name>"
+
+report_recipients = "<recipient@your-domain.com>"
+
+tags = {
+  Environment = "production"
+  Project     = "deleted-users-report"
+  ManagedBy   = "Terraform"
+}

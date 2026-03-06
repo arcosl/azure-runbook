@@ -16,11 +16,12 @@
 #       - CommunicationServiceEmail.Services.Read (for reading communication services) over Azure Communication Services
 #       - CommunicationService Reader (for reading communication services) over Azure Communication Services
 
-# Parameters for Azure Communication Services required to send mails
+# Parameters for Azure Communication Services — read from Automation Account variables
+# (set by Terraform as azurerm_automation_variable_string resources)
 
-$commSrvRGname = "comm-srv-test"
-$commSrvName = "cs-comm-srv-test"
-$recipients = "andrey.aleksandrov@dxc.com"
+$commSrvRGname = Get-AutomationVariable -Name "CommSrvRGName"
+$commSrvName = Get-AutomationVariable -Name "CommSrvName"
+$recipients = Get-AutomationVariable -Name "Recipients"
 
 # Importing necessary modules
 Import-Module Az.Accounts -ErrorAction SilentlyContinue
@@ -102,7 +103,7 @@ if ($domainNameOrId -eq "AzureManagedDomain") {
 else { $domainName = $domainNameOrId }
 
 $senderAddress = "DoNotReply@$domainName"
-$emailRecipientTo = @(@{ Address = $recipients })
+$emailRecipientTo = $recipients -split "\s*,\s*" | Where-Object { $_ } | ForEach-Object { @{ Address = $_ } }
 
 Send-AzEmailServicedataEmail `
     -Endpoint $commEndpoint `
