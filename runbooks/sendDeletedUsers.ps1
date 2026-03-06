@@ -19,9 +19,9 @@
 # Parameters for Azure Communication Services — read from Automation Account variables
 # (set by Terraform as azurerm_automation_variable_string resources)
 
-$commSrvRGname = Get-AutomationVariable -Name "CommSrvRGName"
-$commSrvName = Get-AutomationVariable -Name "CommSrvName"
-$recipients = Get-AutomationVariable -Name "Recipients"
+$commSrvRGname = "comm-srv-test"
+$commSrvName = "cs-comm-srv-test"
+$recipients = "andrey.aleksandrov@dxc.com"
 
 # Importing necessary modules
 Import-Module Az.Accounts -ErrorAction SilentlyContinue
